@@ -22,7 +22,7 @@ class Customers
     }
 }
 
-Interface Notification {
+Interface NotificationInterface {
 
     /**
      * @param $customer
@@ -32,7 +32,7 @@ Interface Notification {
      */
     public function send($customer, $subject, $message);
 
-    public function  parseTemplate($template);
+    public function  parseTemplate($customer, $template);
 }
 
 class NotificationFactory {
@@ -44,19 +44,16 @@ class NotificationFactory {
     }
 }
 
-class EmailNotifications
+class EmailNotifications implements NotificationInterface
 {
 
-    public $customer;
-
-
     public function send($customer, $subject, $message) {
-        $message = $this->parseTemplate($message);
+        $message = $this->parseTemplate($customer, $message);
         @mail($customer->getEmail(), $subject, $message);
     }
 
     public function parseTemplate($customer, $template) {
-        return str_trplace("{customer_name}",$customer->getName(), $template);
+        return str_replace("{customer_name}",$customer->getName(), $template);
     }
 }
 
